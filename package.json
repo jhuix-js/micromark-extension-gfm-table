@@ -66,7 +66,9 @@
       "remark-preset-wooorm"
     ]
   },
-  "repository": "https://github.com/jhuix-js/micromark-extension-gfm-table",
+  "repository": {
+    "url": "git+https://github.com/jhuix-js/micromark-extension-gfm-table.git"
+  },
   "scripts": {
     "build": "tsc --build --clean && tsc --build && type-coverage && micromark-build",
     "format": "remark --frail --quiet --output -- . && prettier --log-level warn --write -- . && xo --fix",
