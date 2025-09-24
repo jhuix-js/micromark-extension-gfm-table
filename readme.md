@@ -1,4 +1,4 @@
-# micromark-extension-gfm-table
+# @jhuix/micromark-extension-gfm-table
 
 [![Build][build-badge]][build]
 [![Coverage][coverage-badge]][coverage]
@@ -8,7 +8,7 @@
 [![Backers][backers-badge]][collective]
 [![Chat][chat-badge]][chat]
 
-[micromark][] extensions to support GFM [tables][].
+[micromark][] extensions to support GFM [tables][]. This extension is based on the [micromark-extension-gfm-table][] extension and has been updated to support headless tables.
 
 ## Contents
 
@@ -17,7 +17,7 @@
 * [Install](#install)
 * [Use](#use)
 * [API](#api)
-  * [`gfmTable()`](#gfmtable)
+  * [`gfmTable()`](#gfmtableoptions-options)
   * [`gfmTableHtml()`](#gfmtablehtml)
 * [Bugs](#bugs)
 * [Authoring](#authoring)
@@ -43,12 +43,12 @@ This project is useful when you want to support tables in markdown.
 
 You can use these extensions when you are working with [`micromark`][micromark].
 To support all GFM features, use
-[`micromark-extension-gfm`][micromark-extension-gfm] instead.
+[`@jhuix/micromark-extension-gfm`][jhuix-micromark-extension-gfm] instead.
 
 When you need a syntax tree, combine this package with
 [`mdast-util-gfm-table`][mdast-util-gfm-table].
 
-All these packages are used in [`remark-gfm`][remark-gfm], which focusses on
+All these packages are used in [`@jhuix/remark-gfm`][jhuix-remark-gfm], which focusses on
 making it easier to transform content by abstracting these internals away.
 
 ## Install
@@ -57,20 +57,20 @@ This package is [ESM only][esm].
 In Node.js (version 16+), install with [npm][]:
 
 ```sh
-npm install micromark-extension-gfm-table
+npm install @jhuix/micromark-extension-gfm-table
 ```
 
 In Deno with [`esm.sh`][esmsh]:
 
 ```js
-import {gfmTable, gfmTableHtml} from 'https://esm.sh/micromark-extension-gfm-table@2'
+import {gfmTable, gfmTableHtml} from 'https://esm.sh/@jhuix/micromark-extension-gfm-table@3'
 ```
 
 In browsers with [`esm.sh`][esmsh]:
 
 ```html
 <script type="module">
-  import {gfmTable, gfmTableHtml} from 'https://esm.sh/micromark-extension-gfm-table@2?bundle'
+  import {gfmTable, gfmTableHtml} from 'https://esm.sh/@jhuix/micromark-extension-gfm-table@3?bundle'
 </script>
 ```
 
@@ -78,7 +78,7 @@ In browsers with [`esm.sh`][esmsh]:
 
 ```js
 import {micromark} from 'micromark'
-import {gfmTable, gfmTableHtml} from 'micromark-extension-gfm-table'
+import {gfmTable, gfmTableHtml} from '@jhuix/micromark-extension-gfm-table'
 
 const output = micromark('| a |\n| - |', {
   extensions: [gfmTable()],
@@ -110,9 +110,114 @@ The export map supports the [`development` condition][development].
 Run `node --conditions development module.js` to get instrumented dev code.
 Without this condition, production code is loaded.
 
-### `gfmTable()`
+### `gfmTable(options?: Options)`
 
-Create an HTML extension for `micromark` to support GitHub tables syntax.
+Create an HTML extension for `micromark` to support GitHub tables syntax and headerless tables.
+
+###### Options
+
+* tableHeadless (`boolean`, default: `true`)
+
+  Table header can be eliminated.
+
+  ```markdown
+  |--|--|--|--|--|--|--|--|
+  |♜|  |♝|♛|♚|♝|♞|♜|
+  |  |♟|♟|♟|  |♟|♟|♟|
+  |♟|  |♞|  |  |  |  |  |
+  |  |♗|  |  |♟|  |  |  |
+  |  |  |  |  |♙|  |  |  |
+  |  |  |  |  |  |♘|  |  |
+  |♙|♙|♙|♙|  |♙|♙|♙|
+  |♖|♘|♗|♕|♔|  |  |♖|
+  ```
+
+  This is parsed below when the option enabled:
+
+  <table>
+  <tbody>
+  <tr>
+  <td>♜</td>
+  <td></td>
+  <td>♝</td>
+  <td>♛</td>
+  <td>♚</td>
+  <td>♝</td>
+  <td>♞</td>
+  <td>♜</td>
+  </tr>
+  <tr>
+  <td></td>
+  <td>♟</td>
+  <td>♟</td>
+  <td>♟</td>
+  <td></td>
+  <td>♟</td>
+  <td>♟</td>
+  <td>♟</td>
+  </tr>
+  <tr>
+  <td>♟</td>
+  <td></td>
+  <td>♞</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  </tr>
+  <tr>
+  <td></td>
+  <td>♗</td>
+  <td></td>
+  <td></td>
+  <td>♟</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  </tr>
+  <tr>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td>♙</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  </tr>
+  <tr>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td>♘</td>
+  <td></td>
+  <td></td>
+  </tr>
+  <tr>
+  <td>♙</td>
+  <td>♙</td>
+  <td>♙</td>
+  <td>♙</td>
+  <td></td>
+  <td>♙</td>
+  <td>♙</td>
+  <td>♙</td>
+  </tr>
+  <tr>
+  <td>♖</td>
+  <td>♘</td>
+  <td>♗</td>
+  <td>♕</td>
+  <td>♔</td>
+  <td></td>
+  <td></td>
+  <td>♖</td>
+  </tr>
+  </tbody>
+  </table>
 
 ###### Returns
 
@@ -397,7 +502,7 @@ versions of Node.js.
 When we cut a new major release, we drop support for unmaintained versions of
 Node.
 This means we try to keep the current release line,
-`micromark-extension-gfm-table@^2`, compatible with Node.js 16.
+`@jhuix/micromark-extension-gfm-table@^3`, compatible with Node.js 16.
 
 This package works with `micromark` version `3` and later.
 
@@ -407,13 +512,13 @@ This package is safe.
 
 ## Related
 
-* [`micromark-extension-gfm`][micromark-extension-gfm]
+* [`@jhuix/micromark-extension-gfm`][jhuix-micromark-extension-gfm]
   — support all of GFM
 * [`mdast-util-gfm-table`][mdast-util-gfm-table]
   — support all of GFM in mdast
 * [`mdast-util-gfm`][mdast-util-gfm]
   — support all of GFM in mdast
-* [`remark-gfm`][remark-gfm]
+* [`@jhuix/remark-gfm`][jhuix-remark-gfm]
   — support all of GFM in remark
 
 ## Contribute
@@ -428,7 +533,7 @@ abide by its terms.
 
 ## License
 
-[MIT][license] © [Titus Wormer][author]
+[MIT][license] © [Jhuix][author] (Hui Jin)
 
 <!-- Definitions -->
 
@@ -464,7 +569,7 @@ abide by its terms.
 
 [license]: license
 
-[author]: https://wooorm.com
+[author]: mailto:jhuix0117@gmail.com
 
 [contributing]: https://github.com/micromark/.github/blob/main/contributing.md
 
@@ -486,13 +591,17 @@ abide by its terms.
 
 [micromark-content-type]: https://github.com/micromark/micromark#content-types
 
-[micromark-extension-gfm]: https://github.com/micromark/micromark-extension-gfm
+[jhuix-micromark-extension-gfm]: https://github.com/jhuix-js/micromark-extension-gfm
+
+[micromark-extension-gfm-table]: https://github.com/micromark/micromark-extension-gfm-table
+
+[jhuix-micromark-extension-gfm-table]: https://github.com/jhuix-js/micromark-extension-gfm-table
 
 [mdast-util-gfm]: https://github.com/syntax-tree/mdast-util-gfm
 
 [mdast-util-gfm-table]: https://github.com/syntax-tree/mdast-util-gfm-table
 
-[remark-gfm]: https://github.com/remarkjs/remark-gfm
+[jhuix-remark-gfm]: https://github.com/jhuix-js/remark-gfm
 
 [tables]: https://github.github.com/gfm/#tables-extension-
 

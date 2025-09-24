@@ -1,8 +1,8 @@
 {
-  "author": "Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)",
-  "bugs": "https://github.com/micromark/micromark-extension-gfm-table/issues",
+  "author": "Jhuix [Hui Jin] <jhuix0117@gmail.com>",
+  "bugs": "https://github.com/jhuix-js/micromark-extension-gfm-table/issues",
   "contributors": [
-    "Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)"
+    "Jhuix [Hui Jin] <jhuix0117@gmail.com>"
   ],
   "dependencies": {
     "devlop": "^1.0.0",
@@ -30,7 +30,6 @@
     "default": "./index.js"
   },
   "files": [
-    "dev/",
     "index.d.ts",
     "index.js",
     "lib/"
@@ -52,7 +51,7 @@
     "unified"
   ],
   "license": "MIT",
-  "name": "micromark-extension-gfm-table",
+  "name": "@jhuix/micromark-extension-gfm-table",
   "prettier": {
     "bracketSpacing": false,
     "semi": false,
@@ -66,7 +65,7 @@
       "remark-preset-wooorm"
     ]
   },
-  "repository": "micromark/micromark-extension-gfm-table",
+  "repository": "https://github.com/jhuix-js/micromark-extension-gfm-table",
   "scripts": {
     "build": "tsc --build --clean && tsc --build && type-coverage && micromark-build",
     "format": "remark --frail --quiet --output -- . && prettier --log-level warn --write -- . && xo --fix",
@@ -82,7 +81,7 @@
     "strict": true
   },
   "type": "module",
-  "version": "2.1.1",
+  "version": "3.1.1",
   "xo": {
     "overrides": [
       {

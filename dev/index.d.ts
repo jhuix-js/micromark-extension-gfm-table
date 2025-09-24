@@ -4,6 +4,17 @@ export {gfmTableHtml} from './lib/html.js'
 export {gfmTable} from './lib/syntax.js'
 
 /**
+ * Configuration (optional).
+ */
+export interface Options {
+  /**
+   * Whether to support headless with a headless table (default: `true`).
+   *
+   */
+  tableHeadless?: boolean | null | undefined
+}
+
+/**
  * Augment types.
  */
 declare module 'micromark-util-types' {
