@@ -1,4 +1,4 @@
-# @jhuix/micromark-extension-gfm-table
+# [**@jhuix/micromark-extension-gfm-table**](https://github.com/jhuix-js/micromark-extension-gfm-table)
 
 [![Build][build-badge]][build]
 [![Coverage][coverage-badge]][coverage]
@@ -8,7 +8,8 @@
 [![Backers][backers-badge]][collective]
 [![Chat][chat-badge]][chat]
 
-[micromark][] extensions to support GFM [tables][]. This extension is based on the [micromark-extension-gfm-table][] extension and has been updated to support headless tables.
+[micromark][] extensions to support GFM [tables][].
+This extension is based on the [micromark-extension-gfm-table][] extension and has been updated to support headless tables.
 
 ## Contents
 
@@ -17,7 +18,7 @@
 * [Install](#install)
 * [Use](#use)
 * [API](#api)
-  * [`gfmTable()`](#gfmtableoptions-options)
+  * [`gfmTable(options?: Options)`](#gfmtableoptions-options)
   * [`gfmTableHtml()`](#gfmtablehtml)
 * [Bugs](#bugs)
 * [Authoring](#authoring)
@@ -595,8 +596,6 @@ abide by its terms.
 
 [micromark-extension-gfm-table]: https://github.com/micromark/micromark-extension-gfm-table
 
-[jhuix-micromark-extension-gfm-table]: https://github.com/jhuix-js/micromark-extension-gfm-table
-
 [mdast-util-gfm]: https://github.com/syntax-tree/mdast-util-gfm
 
 [mdast-util-gfm-table]: https://github.com/syntax-tree/mdast-util-gfm-table
@@ -619,6 +618,6 @@ abide by its terms.
 
 [github-markdown-css]: https://github.com/sindresorhus/github-markdown-css
 
-[api-gfm-table]: #gfmtable
+[api-gfm-table]: #gfmtableoptions-options
 
 [api-gfm-table-html]: #gfmtablehtml

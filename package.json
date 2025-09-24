@@ -69,6 +69,7 @@
   "scripts": {
     "build": "tsc --build --clean && tsc --build && type-coverage && micromark-build",
     "format": "remark --frail --quiet --output -- . && prettier --log-level warn --write -- . && xo --fix",
+    "prepack": "npm run build && npm run format",
     "test-api-dev": "node --conditions development test/index.js",
     "test-api-prod": "node --conditions production test/index.js",
     "test-api": "npm run test-api-dev && npm run test-api-prod",
