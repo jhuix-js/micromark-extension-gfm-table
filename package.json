@@ -60,6 +60,7 @@
     "trailingComma": "none",
     "useTabs": false
   },
+  "private": false,
   "remarkConfig": {
     "plugins": [
       "remark-preset-wooorm"
