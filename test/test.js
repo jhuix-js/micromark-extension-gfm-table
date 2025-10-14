@@ -13,30 +13,43 @@ test('micromark-extension-gfm-table', async function (t) {
 })
 
 test('markdown -> html (micromark)', async function (t) {
-  // await t.test(
+  await t.test('should support a table with headless (3)', async function () {
+    assert.deepEqual(
+      micromark(':- \na', {
+        extensions: [gfmTable({tableHeadless: false})],
+        htmlExtensions: [gfmTableHtml()]
+      }),
+      '<p>:-\na</p>'
+    )
+  })
+
+  // Await t.test(
   //   'should not support a lazy delimiter row (3)',
   //   async function () {
   //     assert.deepEqual(
-  //       micromark('| a |\n> | - |', {
+  //       micromark('| a| b |\n | | - |', {
   //         extensions: [gfmTable()],
   //         htmlExtensions: [gfmTableHtml()]
   //       }),
-  //       '<p>| a |</p>\n<blockquote>\n<table>\n<thead>\n</thead>\n</table>\n</blockquote>'
+  //       '<p>| a| b |\n| - | a |</p>'
   //     )
   //   }
   // )
 
-  await t.test('should not support a lazy body row (2)', async function () {
-    assert.deepEqual(
-      micromark('1||\n:-|-:\na|b', {
-        extensions: [gfmTable()],
-        htmlExtensions: [gfmTableHtml()]
-      }),
-      ''
-    )
-  })
+  // await t.test('should support a table with span maker', async function () {
+  //   assert.deepEqual(
+  //     micromark(
+  //       '1|2||\n1||3|\n:-| - | -:\na|b||\n|^|c||\n|^^|d|h|\n|>|e|f|\n|a||f|',
+  //       {
+  //         extensions: [gfmTable()],
+  //         htmlExtensions: [gfmTableHtml()]
+  //       }
+  //     ),
+  //     '<table>\n<thead>\n<tr>\n<th align="left">1</th>\n<th>2</th>\n<th align="right"></th>\n</tr>\n<tr>\n<th align="left">1</th>\n<th></th>\n<th align="right">3</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td align="left">a</td>\n<td>b</td>\n<td align="right"></td>\n</tr>\n<tr>\n<td align="left">^</td>\n<td>c</td>\n<td align="right"></td>\n</tr>\n<tr>\n<td align="left">^^</td>\n<td>d</td>\n<td align="right">h</td>\n</tr>\n<tr>\n<td align="left">&gt;</td>\n<td>e</td>\n<td align="right">f</td>\n</tr>\n<tr>\n<td align="left">a</td>\n<td></td>\n<td align="right">f</td>\n</tr>\n</tbody>\n</table>'
+  //   )
+  // })
 
-  // await t.test('should not support a lazy body row (2)', async function () {
+  // Await t.test('should not support a lazy body row (2)', async function () {
   //   assert.deepEqual(
   //     micromark('1|2||\n:-|:-|-:\nb|c|d\n\|h||m\n[c]: i|j||', {
   //       extensions: [gfmTable()],

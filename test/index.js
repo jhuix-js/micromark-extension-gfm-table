@@ -552,31 +552,61 @@ test('markdown -> html (micromark)', async function (t) {
     }
   )
 
-  await t.test(
-    'should support a table with headless (1)',
-    async function () {
-      assert.deepEqual(
-        micromark('| - \na', {
-          extensions: [gfmTable()],
-          htmlExtensions: [gfmTableHtml()]
-        }),
-        '<table>\n<thead>\n</thead>\n<tbody>\n<tr>\n<td>a</td>\n</tr>\n</tbody>\n</table>'
-      )
-    }
-  )
+  await t.test('should support a table with headless (1)', async function () {
+    assert.deepEqual(
+      micromark('| - \na', {
+        extensions: [gfmTable()],
+        htmlExtensions: [gfmTableHtml()]
+      }),
+      '<table>\n<thead>\n</thead>\n<tbody>\n<tr>\n<td>a</td>\n</tr>\n</tbody>\n</table>'
+    )
+  })
 
-  await t.test(
-    'should support a table with headless (2)',
-    async function () {
-      assert.deepEqual(
-        micromark(':- \na', {
+  await t.test('should support a table with headless (2)', async function () {
+    assert.deepEqual(
+      micromark(':- \na', {
+        extensions: [gfmTable()],
+        htmlExtensions: [gfmTableHtml()]
+      }),
+      '<table>\n<thead>\n</thead>\n<tbody>\n<tr>\n<td align="left">a</td>\n</tr>\n</tbody>\n</table>'
+    )
+  })
+
+  await t.test('should not support a table with headless', async function () {
+    assert.deepEqual(
+      micromark(':- \na', {
+        extensions: [gfmTable({tableHeadless: false})],
+        htmlExtensions: [gfmTableHtml()]
+      }),
+      '<p>:-\na</p>'
+    )
+  })
+
+  await t.test('should support a table with span maker (1)', async function () {
+    assert.deepEqual(
+      micromark(
+        '1|2||\n1||3|\n:-| = | -:\na|b||\n|^|c||\n|^^|d|h|\n|>|e|f|\n|a||f|',
+        {
           extensions: [gfmTable()],
           htmlExtensions: [gfmTableHtml()]
-        }),
-        '<table>\n<thead>\n</thead>\n<tbody>\n<tr>\n<td align="left">a</td>\n</tr>\n</tbody>\n</table>'
-      )
-    }
-  )
+        }
+      ),
+      '<table>\n<thead>\n<tr>\n<th align="left">1</th>\n<th>2</th>\n<th align="right"></th>\n</tr>\n<tr>\n<th align="left">1</th>\n<th></th>\n<th align="right">3</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td align="left">a</td>\n<td>b</td>\n<td align="right"></td>\n</tr>\n<tr>\n<td align="left">^</td>\n<td>c</td>\n<td align="right"></td>\n</tr>\n<tr>\n<td align="left">^^</td>\n<td>d</td>\n<td align="right">h</td>\n</tr>\n<tr>\n<td align="left">&gt;</td>\n<td>e</td>\n<td align="right">f</td>\n</tr>\n<tr>\n<td align="left">a</td>\n<td></td>\n<td align="right">f</td>\n</tr>\n</tbody>\n</table>'
+    )
+  })
+
+  await t.test('should support a table with span maker (2)', async function () {
+    assert.deepEqual(
+      micromark(
+        '1|2||\n1||3|\n:-| = | -:\na|b||\n|^|c||\n|^^|d|h|\n|>|e|f|\n|>^||f|',
+        {
+          extensions: [gfmTable({colspanWithEmpty: false})],
+          htmlExtensions: [gfmTableHtml()]
+        }
+      ),
+      '<table>\n<thead>\n<tr>\n<th align="left">1</th>\n<th>2</th>\n<th align="right"></th>\n</tr>\n<tr>\n<th align="left">1</th>\n<th></th>\n<th align="right">3</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td align="left">a</td>\n<td>b</td>\n<td align="right"></td>\n</tr>\n<tr>\n<td align="left">^</td>\n<td>c</td>\n<td align="right"></td>\n</tr>\n<tr>\n<td align="left">^^</td>\n<td>d</td>\n<td align="right">h</td>\n</tr>\n<tr>\n<td align="left">&gt;</td>\n<td>e</td>\n<td align="right">f</td>\n</tr>\n<tr>\n<td align="left">&gt;^</td>\n<td></td>\n<td align="right">f</td>\n</tr>\n</tbody>\n</table>'
+    )
+  })
 })
 
 test('fixtures', async function (t) {
