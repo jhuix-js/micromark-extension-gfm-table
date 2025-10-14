@@ -56,8 +56,8 @@ declare module 'micromark-util-types' {
   interface TokenTypeMap {
     tableBody: 'tableBody'
     tableCellDivider: 'tableCellDivider'
-    tableColspanLeftMarker: 'tableColspanLeftMarker',
-    tableColspanRightMarker: 'tableColspanRightMarker',
+    tableColspanLeftMarker: 'tableColspanLeftMarker'
+    tableColspanRightMarker: 'tableColspanRightMarker'
     tableContent: 'tableContent'
     tableData: 'tableData'
     tableDelimiterFiller: 'tableDelimiterFiller'
@@ -67,7 +67,7 @@ declare module 'micromark-util-types' {
     tableHeader: 'tableHeader'
     tableHead: 'tableHead'
     tableRow: 'tableRow'
-    tableRowspanMarker: 'tableRowspanMarker',
+    tableRowspanMarker: 'tableRowspanMarker'
     table: 'table'
   }
 }

@@ -220,6 +220,10 @@ Create an HTML extension for `micromark` to support GitHub tables syntax and hea
   </tbody>
   </table>
 
+* colspanWithEmpty (`boolean`, default: `true`)
+
+Whether to merge cell with the right empty cell which contains no spaces (||), It will be parsed as an empty token type ('tableColspanLeftMarker').
+
 ###### Returns
 
 Extension for `micromark` that can be passed in `extensions` to enable GFM
