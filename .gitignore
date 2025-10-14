@@ -3,9 +3,11 @@
 *.map
 *.tsbuildinfo
 .DS_Store
+.vscode/
 /index.js
 /lib/
 coverage/
 node_modules/
 yarn.lock
+test.js
 !dev/index.d.ts

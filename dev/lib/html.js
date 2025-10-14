@@ -80,6 +80,33 @@ export function gfmTableHtml() {
 
         this.raw(this.encode(value))
       },
+      tableRowspanMarker(token) {
+        let value = this.sliceSerialize(token)
+
+        if (this.getData('tableAlign')) {
+          value = value.replace(/\\([\\|])/g, replace)
+        }
+
+        this.raw(this.encode(value))
+      },
+      tableColspanLeftMarker(token) {
+        let value = this.sliceSerialize(token)
+
+        if (this.getData('tableAlign')) {
+          value = value.replace(/\\([\\|])/g, replace)
+        }
+
+        this.raw(this.encode(value))
+      },
+      tableColspanRightMarker(token) {
+        let value = this.sliceSerialize(token)
+
+        if (this.getData('tableAlign')) {
+          value = value.replace(/\\([\\|])/g, replace)
+        }
+
+        this.raw(this.encode(value))
+      },
       table() {
         this.setData('tableAlign')
         // Note: we don’t set `slurpAllLineEndings` anymore, in delimiter rows,

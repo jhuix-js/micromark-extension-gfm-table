@@ -32,10 +32,14 @@ import {gfmTableAlign} from './infer.js'
  *   table syntax.
  */
 export function gfmTable(options) {
-  const options_ = options || {}
+  const options_ = options || {tableHeadless: true, colspanWithEmpty: true}
   let tableHeadless = options_.tableHeadless
+  let colspanWithEmpty = options_.colspanWithEmpty
   if (tableHeadless === null || tableHeadless === undefined) {
     tableHeadless = true
+  }
+  if (colspanWithEmpty === null || colspanWithEmpty === undefined) {
+    colspanWithEmpty = true
   }
   return {
     flow: {
@@ -49,9 +53,16 @@ export function gfmTable(options) {
    */
   function tokenizeTable(effects, ok, nok) {
     const self = this
+    const limitRowspanMarkers = 2
+    const limitColspanMarkers = 1
     let size = 0
     let sizeB = 0
+    let sizeR = 0
+    let sizeC = 0
+    let sizeS = 0
     let headless = false
+    let headlines = 0
+    let storgeEventIndex = 0
     /** @type {boolean | undefined} */
     let seen
 
@@ -82,15 +93,13 @@ export function gfmTable(options) {
           type === types.lineEnding ||
           // Note: markdown-rs uses `whitespace` instead of `linePrefix`
           type === types.linePrefix
-        )
-          index--
+        ) index--
         else break
       }
 
       const tail = index > -1 ? self.events[index][1].type : null
 
-      const next =
-        tail === 'tableHead' || tail === 'tableRow' ? bodyRowStart : headRowBefore
+      const next = tail === 'tableHead' || tail === 'tableRow' ? bodyRowStart : headRowBefore
 
       // Don’t allow lazy body rows.
       if (next === bodyRowStart && self.parser.lazy[self.now().line]) {
@@ -115,6 +124,7 @@ export function gfmTable(options) {
     function headRowBefore(code) {
       effects.enter('tableHead')
       effects.enter('tableRow')
+      storgeEventIndex = self.events.length - 1
       return headRowStart(code)
     }
 
@@ -131,7 +141,9 @@ export function gfmTable(options) {
      * @type {State}
      */
     function headRowStart(code) {
+      headlines++
       if (code === codes.verticalBar) {
+        sizeS += 1
         return headRowBreak(code)
       }
 
@@ -173,8 +185,10 @@ export function gfmTable(options) {
 
       if (markdownLineEnding(code)) {
         // If anything other than one pipe (ignoring whitespace) was used, it’s fine.
-        if (sizeB > 1) {
+        // And must be one character '|' in each line.
+        if (sizeB > 1 && sizeC > 0) {
           sizeB = 0
+          sizeS = 0
           // To do: check if this works.
           // Feel free to interrupt:
           self.interrupt = true
@@ -184,21 +198,32 @@ export function gfmTable(options) {
           effects.enter(types.lineEnding)
           effects.consume(code)
           effects.exit(types.lineEnding)
-          return headDelimiterStart
+          return headMultiLinesStart
         }
 
         // Note: in `markdown-rs`, we need to reset, in `micromark-js` we don‘t.
         return nok(code)
       }
 
-      if (tableHeadless && !size && (code === codes.dash || code === codes.equalsTo || code === codes.colon)) {
-        // support headless
+      if (code !== codes.verticalBar) {
+        sizeS += 1
+      }
+
+      if (
+        seen &&
+        ((tableHeadless && headlines === 1 && !size) || sizeB <= 1) &&
+        (code === codes.dash || code === codes.equalsTo || code === codes.colon)
+      ) {
+        // To do: support headless and multiline head
         sizeB = 0
-        headless = true
+        headless = tableHeadless && headlines === 1 ? !size : false
         // Reset `interrupt`.
         self.interrupt = false
-        self.events[1][1].type = 'tableDelimiterRow'
-        return headDelimiterValueBefore(code);
+        if (storgeEventIndex > 0) {
+          self.events[storgeEventIndex][1].type = 'tableDelimiterRow'
+          storgeEventIndex = 0
+        }
+        return headDelimiterValueBefore(code)
       }
 
       if (markdownSpace(code)) {
@@ -217,15 +242,28 @@ export function gfmTable(options) {
       }
 
       if (code === codes.verticalBar) {
+        if (!sizeS && colspanWithEmpty) {
+          // table colspan left marker with '||'
+          effects.enter('tableColspanLeftMarker')
+          const marker = self.events[self.events.length - 1][1]
+          marker.start._bufferIndex = self.events[self.events.length - 2][1].start._bufferIndex
+          marker.start._index = self.events[self.events.length - 2][1].start._index
+          effects.exit('tableColspanLeftMarker')
+          marker.start._bufferIndex = marker.end._bufferIndex
+          marker.start._index = marker.end._index
+        }
         effects.enter('tableCellDivider')
         effects.consume(code)
         effects.exit('tableCellDivider')
         // Whether a delimiter was seen.
         seen = true
+        sizeC += 1
+        sizeS = 0
         return headRowBreak
       }
 
-      headless = false;
+      headless = false
+      storgeEventIndex = 0
       // Anything else is cell data.
       effects.enter(types.data)
       return headRowData(code)
@@ -279,7 +317,7 @@ export function gfmTable(options) {
     }
 
     /**
-     * Before delimiter row.
+     * Before multi lines head row.
      *
      * ```markdown
      *   | | a |
@@ -290,7 +328,7 @@ export function gfmTable(options) {
      *
      * @type {State}
      */
-    function headDelimiterStart(code) {
+    function headMultiLinesStart(code) {
       // Reset `interrupt`.
       self.interrupt = false
 
@@ -299,15 +337,16 @@ export function gfmTable(options) {
         return nok(code)
       }
 
-      effects.enter('tableDelimiterRow')
       // Track if we’ve seen a `:` or `|`.
       seen = false
+      effects.enter('tableRow')
+      storgeEventIndex = self.events.length - 1
 
       if (markdownSpace(code)) {
         assert(self.parser.constructs.disable.null, 'expected `disabled.null`')
         return factorySpace(
           effects,
-          headDelimiterBefore,
+          headRowStart,
           types.linePrefix,
           self.parser.constructs.disable.null.includes('codeIndented')
             ? undefined
@@ -315,7 +354,7 @@ export function gfmTable(options) {
         )(code)
       }
 
-      return headDelimiterBefore(code)
+      return headRowStart(code)
     }
 
     /**
@@ -387,6 +426,7 @@ export function gfmTable(options) {
     function headDelimiterValueBefore(code) {
       // Align: left.
       if (code === codes.colon) {
+        size += 1
         sizeB += 1
         seen = true
 
@@ -398,6 +438,7 @@ export function gfmTable(options) {
 
       // Align: none.
       if (code === codes.dash || code === codes.equalsTo) {
+        size += 1
         sizeB += 1
         // To do: seems weird that this *isn’t* left aligned, but that state is used?
         return headDelimiterLeftAlignmentAfter(code)
@@ -502,11 +543,16 @@ export function gfmTable(options) {
       }
 
       if (code === codes.eof || markdownLineEnding(code)) {
+        // we need to handle piercing here too.
+        if (self.parser.lazy[self.now().line]) {
+          return nok(code)
+        }
+
         // Exit when:
         // * there was no `:` or `|` at all (it’s a thematic break or setext
         //   underline instead)
         // * the header cell count is not the delimiter cell count
-        if (!seen || (!headless && size !== sizeB)) {
+        if (!seen || (!headless && size !== sizeB * headlines)) {
           headless = false
           return headDelimiterNok(code)
         }
@@ -555,6 +601,10 @@ export function gfmTable(options) {
       // Note: in `markdown-rs` we need to manually take care of a prefix,
       // but in `micromark-js` that is done for us, so if we’re here, we’re
       // never at whitespace.
+      sizeR = 0
+      sizeC = 0
+      sizeS = 1
+      storgeEventIndex = 0
       effects.enter('tableRow')
       return bodyRowBreak(code)
     }
@@ -575,9 +625,22 @@ export function gfmTable(options) {
      */
     function bodyRowBreak(code) {
       if (code === codes.verticalBar) {
+        if (!sizeS && colspanWithEmpty) {
+          // table colspan left marker with '||'
+          effects.enter('tableColspanLeftMarker')
+          const marker = self.events[self.events.length - 1][1]
+          marker.start._bufferIndex = self.events[self.events.length - 2][1].start._bufferIndex
+          marker.start._index = self.events[self.events.length - 2][1].start._index
+          effects.exit('tableColspanLeftMarker')
+          marker.start._bufferIndex = marker.end._bufferIndex
+          marker.start._index = marker.end._index
+        }
         effects.enter('tableCellDivider')
         effects.consume(code)
         effects.exit('tableCellDivider')
+        sizeR = 0
+        sizeC = 0
+        sizeS = 0
         return bodyRowBreak
       }
 
@@ -586,12 +649,14 @@ export function gfmTable(options) {
         return ok(code)
       }
 
+      sizeS += 1
       if (markdownSpace(code)) {
         return factorySpace(effects, bodyRowBreak, types.whitespace)(code)
       }
 
       // Anything else is cell content.
       effects.enter(types.data)
+      storgeEventIndex = self.events.length - 1
       return bodyRowData(code)
     }
 
@@ -613,11 +678,60 @@ export function gfmTable(options) {
         code === codes.verticalBar ||
         markdownLineEndingOrSpace(code)
       ) {
-        effects.exit(types.data)
+        if (
+          (sizeC === 0 && sizeR === 0) ||
+          sizeC > limitColspanMarkers ||
+          sizeR > limitRowspanMarkers
+        ) {
+          effects.exit(types.data)
+          sizeC = 0
+          sizeR = 0
+          return bodyRowBreak(code)
+        }
+
+        if (sizeC > 0) {
+          // support table col span right marker with '>'
+          self.events[storgeEventIndex][1].type = 'tableColspanRightMarker'
+          effects.exit('tableColspanRightMarker')
+          sizeC = 0
+          sizeR = 0
+          return bodyRowBreak(code)
+        }
+
+        // support table row span marker with '^' or '^^'
+        self.events[storgeEventIndex][1].type = 'tableRowspanMarker'
+        effects.exit('tableRowspanMarker')
+        sizeC = 0
+        sizeR = 0
         return bodyRowBreak(code)
       }
 
       effects.consume(code)
+
+      // table rowspan marker with '^' or '^^'
+      if (code === codes.caret) {
+        if (sizeC > 0) {
+          sizeC = limitColspanMarkers + 1
+          sizeR = limitRowspanMarkers + 1
+        } else {
+          sizeR++
+        }
+        return bodyRowData
+      }
+
+      // table colspan right marker with '>'
+      if (code === codes.greaterThan) {
+        if (sizeR > 0) {
+          sizeC = limitColspanMarkers + 1
+          sizeR = limitRowspanMarkers + 1
+        } else {
+          sizeC++
+        }
+        return bodyRowData
+      }
+
+      sizeC = limitColspanMarkers + 1
+      sizeR = limitRowspanMarkers + 1
       return code === codes.backslash ? bodyRowEscape : bodyRowData
     }
 
@@ -717,8 +831,8 @@ export function gfmTable(options) {
         else if (
           rowKind &&
           (token.type === types.data ||
-            token.type === 'tableDelimiterMarker' ||
-            token.type === 'tableDelimiterFiller')
+          token.type === 'tableDelimiterMarker' ||
+          token.type === 'tableDelimiterFiller')
         ) {
           inFirstCellAwaitingPipe = false
 
@@ -757,6 +871,14 @@ export function gfmTable(options) {
 
             lastCell = cell
             cell = [lastCell[1], index, 0, 0]
+          }
+        } else if (
+          token.type === 'tableColspanLeftMarker' ||
+          token.type === 'tableColspanRightMarker' ||
+          token.type === 'tableRowspanMarker'
+        ) {
+          if (inFirstCellAwaitingPipe) {
+            inFirstCellAwaitingPipe = false
           }
         }
       }
@@ -831,12 +953,7 @@ export function gfmTable(options) {
   function flushCell(map, context, range, rowKind, rowEnd, previousCell) {
     // `markdown-rs` uses:
     // rowKind === 2 ? 'tableDelimiterCell' : 'tableCell'
-    const groupName =
-      rowKind === 1
-        ? 'tableHeader'
-        : rowKind === 2
-          ? 'tableDelimiter'
-          : 'tableData'
+    const groupName = rowKind === 1 ? 'tableHeader' : rowKind === 2 ? 'tableDelimiter' : 'tableData'
     // `markdown-rs` uses:
     // rowKind === 2 ? 'tableDelimiterCellValue' : 'tableCellText'
     const valueName = 'tableContent'

@@ -11,7 +11,11 @@ export interface Options {
    * Whether to support headless with a headless table (default: `true`).
    *
    */
-  tableHeadless?: boolean | null | undefined
+  tableHeadless?: boolean | undefined | null
+  /**
+   * Whether to merge cell with the right empty cell which contains no spaces (||) (default: `true`).
+   */
+  colspanWithEmpty?: boolean | undefined | null
 }
 
 /**
@@ -52,6 +56,8 @@ declare module 'micromark-util-types' {
   interface TokenTypeMap {
     tableBody: 'tableBody'
     tableCellDivider: 'tableCellDivider'
+    tableColspanLeftMarker: 'tableColspanLeftMarker',
+    tableColspanRightMarker: 'tableColspanRightMarker',
     tableContent: 'tableContent'
     tableData: 'tableData'
     tableDelimiterFiller: 'tableDelimiterFiller'
@@ -61,6 +67,7 @@ declare module 'micromark-util-types' {
     tableHeader: 'tableHeader'
     tableHead: 'tableHead'
     tableRow: 'tableRow'
+    tableRowspanMarker: 'tableRowspanMarker',
     table: 'table'
   }
 }

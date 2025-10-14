@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "checkJs": true,
+    "composite": true,
     "customConditions": ["development"],
     "declarationMap": true,
     "declaration": true,
