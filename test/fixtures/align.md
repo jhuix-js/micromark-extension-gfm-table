@@ -53,14 +53,14 @@
 
 ## No pipe
 
-a
-:-:
+a|
+|:-:
 
-a
-:-
+a|
+:-|
 
-a
--:
+|a
+|-:
 
 ## A single colon
 

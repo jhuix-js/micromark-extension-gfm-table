@@ -1,6 +1,6 @@
 ## Blank line
 
-a
+a|
 :-
 b
 
@@ -8,37 +8,37 @@ c
 
 ## Block quote
 
-a
+a|
 :-
 b
 > c
 
 ## Code (fenced)
 
-a
+a|
 :-
-b
+b|
 ```
 c
 ```
 
 ## Code (indented)
 
-a
+a|
 :-
 b
     c
 
 ## Definition
 
-a
+a|
 :-
 b
 [c]: d
 
 ## Heading (atx)
 
-a
+a|
 :-
 b
 # c
@@ -46,7 +46,7 @@ b
 
 ## Heading (setext) (rank 1)
 
-a
+a|
 :-
 b
 ==
@@ -54,7 +54,7 @@ c
 
 ## Heading (setext) (rank 2)
 
-a
+a|
 :-
 b
 --
@@ -62,7 +62,7 @@ c
 
 ## HTML (flow, kind 1: raw)
 
-a
+a|
 :-
 b
 <pre>
@@ -71,70 +71,70 @@ b
 
 ## HTML (flow, kind 2: comment)
 
-a
+a|
 :-
 b
 <!-- c -->
 
 ## HTML (flow, kind 3: instruction)
 
-a
+a|
 :-
 b
 <? c ?>
 
 ## HTML (flow, kind 4: declaration)
 
-a
+a|
 :-
 b
 <!C>
 
 ## HTML (flow, kind 5: cdata)
 
-a
+a|
 :-
 b
 <![CDATA[c]]>
 
 ## HTML (flow, kind 6: basic)
 
-a
+a|
 :-
 b
 <div>
 
 ## HTML (flow, kind 7: complete)
 
-a
+a|
 :-
 b
 <x>
 
 ## List (ordered, 1)
 
-a
+a|
 :-
 b
 1. c
 
 ## List (ordered, other)
 
-a
+a|
 :-
 b
 2. c
 
 ## List (unordered)
 
-a
+a|
 :-
 b
 * c
 
 ## List (unordered, blank)
 
-a
+a|
 :-
 b
 *
@@ -142,7 +142,7 @@ c
 
 ## List (unordered, blank start)
 
-a
+a|
 :-
 b
 *
@@ -150,7 +150,7 @@ b
 
 ## Thematic break
 
-a
+a|
 :-
 b
 ***

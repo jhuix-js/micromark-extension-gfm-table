@@ -15,5 +15,5 @@ b
 
 ## No pipe in first row
 
-a
+a |
 | - |

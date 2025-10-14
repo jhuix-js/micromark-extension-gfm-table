@@ -3,7 +3,7 @@ import fs from 'node:fs/promises'
 import test from 'node:test'
 import {micromark} from 'micromark'
 import {createGfmFixtures} from 'create-gfm-fixtures'
-import {gfmTable, gfmTableHtml} from 'micromark-extension-gfm-table'
+import {gfmTable, gfmTableHtml} from '@jhuix/micromark-extension-gfm-table'
 
 test('micromark-extension-gfm-table', async function (t) {
   await t.test('should expose the public api', async function () {
@@ -288,7 +288,7 @@ test('markdown -> html (micromark)', async function (t) {
           extensions: [gfmTable()],
           htmlExtensions: [gfmTableHtml()]
         }),
-        '<p>| a |</p>\n<blockquote>\n<p>| - |</p>\n</blockquote>'
+        '<p>| a |</p>\n<blockquote>\n<table>\n<thead>\n</thead>\n</table>\n</blockquote>'
       )
     }
   )
@@ -522,6 +522,58 @@ test('markdown -> html (micromark)', async function (t) {
           htmlExtensions: [gfmTableHtml()]
         }),
         '<table>\n<thead>\n<tr>\n<th>a</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>heading</td>\n</tr>\n</tbody>\n</table>\n<ul>\n<li></li>\n</ul>'
+      )
+    }
+  )
+
+  await t.test(
+    'should support a table with multi line head (1)',
+    async function () {
+      assert.deepEqual(
+        micromark('| a |\n| b |\n| - |\nc', {
+          extensions: [gfmTable()],
+          htmlExtensions: [gfmTableHtml()]
+        }),
+        '<table>\n<thead>\n<tr>\n<th>a</th>\n</tr>\n<tr>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>c</td>\n</tr>\n</tbody>\n</table>'
+      )
+    }
+  )
+
+  await t.test(
+    'should support a table with multi line head (2)',
+    async function () {
+      assert.deepEqual(
+        micromark('| a |\n| b |\nc|\n| - |\nd', {
+          extensions: [gfmTable()],
+          htmlExtensions: [gfmTableHtml()]
+        }),
+        '<table>\n<thead>\n<tr>\n<th>a</th>\n</tr>\n<tr>\n<th>b</th>\n</tr>\n<tr>\n<th>c</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>d</td>\n</tr>\n</tbody>\n</table>'
+      )
+    }
+  )
+
+  await t.test(
+    'should support a table with headless (1)',
+    async function () {
+      assert.deepEqual(
+        micromark('| - \na', {
+          extensions: [gfmTable()],
+          htmlExtensions: [gfmTableHtml()]
+        }),
+        '<table>\n<thead>\n</thead>\n<tbody>\n<tr>\n<td>a</td>\n</tr>\n</tbody>\n</table>'
+      )
+    }
+  )
+
+  await t.test(
+    'should support a table with headless (2)',
+    async function () {
+      assert.deepEqual(
+        micromark(':- \na', {
+          extensions: [gfmTable()],
+          htmlExtensions: [gfmTableHtml()]
+        }),
+        '<table>\n<thead>\n</thead>\n<tbody>\n<tr>\n<td align="left">a</td>\n</tr>\n</tbody>\n</table>'
       )
     }
   )

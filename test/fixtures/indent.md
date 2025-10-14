@@ -2,10 +2,10 @@
 
 ## Indented delimiter row
 
-a
+a|
    |-
 
-a
+a|
     |-
 
 ## Indented body
