@@ -32,7 +32,8 @@
   "files": [
     "index.d.ts",
     "index.js",
-    "lib/"
+    "lib/",
+    "dev/"
   ],
   "keywords": [
     "cell",
