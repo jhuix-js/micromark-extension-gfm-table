@@ -1,15 +1,12 @@
 # [**@jhuix/micromark-extension-gfm-table**](https://github.com/jhuix-js/micromark-extension-gfm-table)
 
-[![Build][build-badge]][build]
-[![Coverage][coverage-badge]][coverage]
 [![Downloads][downloads-badge]][downloads]
 [![Size][size-badge]][size]
-[![Sponsors][sponsors-badge]][collective]
-[![Backers][backers-badge]][collective]
-[![Chat][chat-badge]][chat]
 
 [micromark][] extensions to support GFM [tables][].
-This extension is based on the [micromark-extension-gfm-table][] extension and has been updated to support headless tables.
+This extension is based on the [micromark-extension-gfm-table][] extension.
+It support the table syntax of headless, multiline head, rowspan marker,
+colspan (left or right) marker.
 
 ## Contents
 
@@ -37,6 +34,8 @@ This extension is based on the [micromark-extension-gfm-table][] extension and h
 This package contains extensions that add support for the table syntax enabled
 by GFM to [`micromark`][micromark].
 These extensions match github.com.
+It also support the table syntax of headless, multiline head, rowspan marker,
+colspan (left or right) marker.
 
 ## When to use this
 
@@ -47,7 +46,7 @@ To support all GFM features, use
 [`@jhuix/micromark-extension-gfm`][jhuix-micromark-extension-gfm] instead.
 
 When you need a syntax tree, combine this package with
-[`mdast-util-gfm-table`][mdast-util-gfm-table].
+[`@jhuix/mdast-util-gfm-table`][mdast-util-gfm-table].
 
 All these packages are used in [`@jhuix/remark-gfm`][jhuix-remark-gfm], which focusses on
 making it easier to transform content by abstracting these internals away.
@@ -113,7 +112,63 @@ Without this condition, production code is loaded.
 
 ### `gfmTable(options?: Options)`
 
-Create an HTML extension for `micromark` to support GitHub tables syntax and headerless tables.
+Create an HTML extension for `micromark` to support GitHub tables syntax and
+headerless tables, multiline head tables, rowspan marker, colspan(left or right)
+marker syntax.
+
+* headerless tables syntax
+
+  ```markdown
+  |:--|:--:|--:|
+  |a  |  b |  c|
+  ```
+
+* multiline head tables syntax
+
+  ```markdown
+  | 1 | 2  | 3 |
+  | 4 | 5  | 6 |
+  |:--|:--:|--:|
+  |a  |  b |  c|
+  ```
+
+* rowspan marker syntax
+
+  The rowspan marker syntax keyword is string '^' or '^^'.
+  It will be parsed as an rowspan token type ('tableRowspanMarker').
+
+  ```markdown
+  | 1 | 2  | 3 |
+  |:--|:--:|--:|
+  |a  |  b |  c|
+  |^  |  d |  e|
+  |^^ |  f |  g|
+  ```
+
+* colspan marker syntax
+
+  The left colspan marker syntax keyword is string '>'.
+  It will be parsed as an left colspan token type ('tableColspanLeftMarker').
+
+  ```markdown
+  | 1 | 2  | 3 |
+  |:--|:--:|--:|
+  |a  |  b |  c|
+  |>  |  d |  e|
+  | h |  f |  g|
+  ```
+
+  The right colspan marker syntax is the right empty cell
+  which contains no spaces, as '||'.
+  It will be parsed as an right colspan token type ('tableColspanRightMarker').
+
+  ```markdown
+  | 1 | 2  | 3 |
+  |:--|:--:|--:|
+  |a  |  b |  c|
+  |d  |  e ||
+  | h ||  g|
+  ```
 
 ###### Options
 
@@ -222,7 +277,8 @@ Create an HTML extension for `micromark` to support GitHub tables syntax and hea
 
 * colspanWithEmpty (`boolean`, default: `true`)
 
-Whether to merge cell with the right empty cell which contains no spaces (||), It will be parsed as an empty token type ('tableColspanLeftMarker').
+Whether to merge cell with the right empty cell which contains no spaces (||).
+It will be parsed as an empty token type ('tableColspanLeftMarker').
 
 ###### Returns
 
@@ -519,9 +575,9 @@ This package is safe.
 
 * [`@jhuix/micromark-extension-gfm`][jhuix-micromark-extension-gfm]
   — support all of GFM
-* [`mdast-util-gfm-table`][mdast-util-gfm-table]
+* [`@jhuix/mdast-util-gfm-table`][jhuix-mdast-util-gfm-table]
   — support all of GFM in mdast
-* [`mdast-util-gfm`][mdast-util-gfm]
+* [`@jhuix/mdast-util-gfm`][jhuix-mdast-util-gfm]
   — support all of GFM in mdast
 * [`@jhuix/remark-gfm`][jhuix-remark-gfm]
   — support all of GFM in remark
@@ -542,31 +598,13 @@ abide by its terms.
 
 <!-- Definitions -->
 
-[build-badge]: https://github.com/micromark/micromark-extension-gfm-table/workflows/main/badge.svg
+[downloads-badge]: https://img.shields.io/npm/dm/@jhuix/micromark-extension-gfm-table.svg
 
-[build]: https://github.com/micromark/micromark-extension-gfm-table/actions
+[downloads]: https://www.npmjs.com/package/@jhuix/micromark-extension-gfm-table
 
-[coverage-badge]: https://img.shields.io/codecov/c/github/micromark/micromark-extension-gfm-table.svg
+[size-badge]: https://img.shields.io/badge/dynamic/json?label=minzipped%20size&query=$.size.compressedSize&url=https://deno.bundlejs.com/?q=@jhuix/micromark-extension-gfm-table
 
-[coverage]: https://codecov.io/github/micromark/micromark-extension-gfm-table
-
-[downloads-badge]: https://img.shields.io/npm/dm/micromark-extension-gfm-table.svg
-
-[downloads]: https://www.npmjs.com/package/micromark-extension-gfm-table
-
-[size-badge]: https://img.shields.io/badge/dynamic/json?label=minzipped%20size&query=$.size.compressedSize&url=https://deno.bundlejs.com/?q=micromark-extension-gfm-table
-
-[size]: https://bundlejs.com/?q=micromark-extension-gfm-table
-
-[sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
-
-[backers-badge]: https://opencollective.com/unified/backers/badge.svg
-
-[collective]: https://opencollective.com/unified
-
-[chat-badge]: https://img.shields.io/badge/chat-discussions-success.svg
-
-[chat]: https://github.com/micromark/micromark/discussions
+[size]: https://bundlejs.com/?q=@jhuix/micromark-extension-gfm-table
 
 [npm]: https://docs.npmjs.com/cli/install
 
@@ -600,9 +638,9 @@ abide by its terms.
 
 [micromark-extension-gfm-table]: https://github.com/micromark/micromark-extension-gfm-table
 
-[mdast-util-gfm]: https://github.com/syntax-tree/mdast-util-gfm
+[jhuix-mdast-util-gfm]: https://github.com/jhuix-js/mdast-util-gfm
 
-[mdast-util-gfm-table]: https://github.com/syntax-tree/mdast-util-gfm-table
+[jhuix-mdast-util-gfm-table]: https://github.com/jhuix-js/mdast-util-gfm-table
 
 [jhuix-remark-gfm]: https://github.com/jhuix-js/remark-gfm
 
