@@ -116,60 +116,6 @@ Create an HTML extension for `micromark` to support GitHub tables syntax and
 headerless tables, multiline head tables, rowspan marker, colspan(left or right)
 marker syntax.
 
-* headerless tables syntax
-
-  ```markdown
-  |:--|:--:|--:|
-  |a  |  b |  c|
-  ```
-
-* multiline head tables syntax
-
-  ```markdown
-  | 1 | 2  | 3 |
-  | 4 | 5  | 6 |
-  |:--|:--:|--:|
-  |a  |  b |  c|
-  ```
-
-* rowspan marker syntax
-
-  The rowspan marker syntax keyword is string '^' or '^^'.
-  It will be parsed as an rowspan token type ('tableRowspanMarker').
-
-  ```markdown
-  | 1 | 2  | 3 |
-  |:--|:--:|--:|
-  |a  |  b |  c|
-  |^  |  d |  e|
-  |^^ |  f |  g|
-  ```
-
-* colspan marker syntax
-
-  The left colspan marker syntax keyword is string '>'.
-  It will be parsed as an left colspan token type ('tableColspanLeftMarker').
-
-  ```markdown
-  | 1 | 2  | 3 |
-  |:--|:--:|--:|
-  |a  |  b |  c|
-  |>  |  d |  e|
-  | h |  f |  g|
-  ```
-
-  The right colspan marker syntax is the right empty cell
-  which contains no spaces, as '||'.
-  It will be parsed as an right colspan token type ('tableColspanRightMarker').
-
-  ```markdown
-  | 1 | 2  | 3 |
-  |:--|:--:|--:|
-  |a  |  b |  c|
-  |d  |  e ||
-  | h ||  g|
-  ```
-
 ###### Options
 
 * tableHeadless (`boolean`, default: `true`)
@@ -277,8 +223,8 @@ marker syntax.
 
 * colspanWithEmpty (`boolean`, default: `true`)
 
-Whether to merge cell with the right empty cell which contains no spaces (||).
-It will be parsed as an empty token type ('tableColspanLeftMarker').
+  Whether to merge cell with the right empty cell which contains no spaces (||).
+  It will be parsed as an empty token type ('tableColspanLeftMarker').
 
 ###### Returns
 
@@ -549,6 +495,62 @@ Yields:
 
 > 👉 **Note**: no other character can be escaped like this.
 > Escaping pipes in code does not work when not inside a table, either.
+
+Extended Syntax:
+
+* headerless tables syntax
+
+  ```markdown
+  |:--|:--:|--:|
+  |a  |  b |  c|
+  ```
+
+* multiline head tables syntax
+
+  ```markdown
+  | 1 | 2  | 3 |
+  | 4 | 5  | 6 |
+  |:--|:--:|--:|
+  |a  |  b |  c|
+  ```
+
+* rowspan marker syntax
+
+  The rowspan marker syntax keyword is string '^' or '^^'.
+  It will be parsed as an rowspan token type ('tableRowspanMarker').
+
+  ```markdown
+  | 1 | 2  | 3 |
+  |:--|:--:|--:|
+  |a  |  b |  c|
+  |^  |  d |  e|
+  |^^ |  f |  g|
+  ```
+
+* colspan marker syntax
+
+  The left colspan marker syntax keyword is string '>'.
+  It will be parsed as an left colspan token type ('tableColspanLeftMarker').
+
+  ```markdown
+  | 1 | 2  | 3 |
+  |:--|:--:|--:|
+  |a  |  b |  c|
+  |>  |  d |  e|
+  | h |  f |  g|
+  ```
+
+  The right colspan marker syntax is the right empty cell
+  which contains no spaces, as '||'.
+  It will be parsed as an right colspan token type ('tableColspanRightMarker').
+
+  ```markdown
+  | 1 | 2  | 3 |
+  |:--|:--:|--:|
+  |a  |  b |  c|
+  |d  |  e ||
+  | h ||  g|
+  ```
 
 ## Types
 
