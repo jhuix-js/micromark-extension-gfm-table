@@ -26,7 +26,6 @@ colspan (left or right) marker.
 * [Compatibility](#compatibility)
 * [Security](#security)
 * [Related](#related)
-* [Contribute](#contribute)
 * [License](#license)
 
 ## What is this?
@@ -584,16 +583,6 @@ This package is safe.
 * [`@jhuix/remark-gfm`][jhuix-remark-gfm]
   — support all of GFM in remark
 
-## Contribute
-
-See [`contributing.md` in `micromark/.github`][contributing] for ways to get
-started.
-See [`support.md`][support] for ways to get help.
-
-This project has a [code of conduct][coc].
-By interacting with this repository, organization, or community you agree to
-abide by its terms.
-
 ## License
 
 [MIT][license], Updated by [Jhuix][author] (Hui Jin)
@@ -615,12 +604,6 @@ abide by its terms.
 [license]: license
 
 [author]: mailto:jhuix0117@gmail.com
-
-[contributing]: https://github.com/micromark/.github/blob/main/contributing.md
-
-[support]: https://github.com/micromark/.github/blob/main/support.md
-
-[coc]: https://github.com/micromark/.github/blob/main/code-of-conduct.md
 
 [esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
 
